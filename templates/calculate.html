@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calculadora de Suscripciones</title>
+    <style>
+        body {
+            background-image: url("{{ url_for('static', filename='imagen-fondo-calculadora.jpg') }}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: black; /* Cambia el color del texto a negro */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* Estilos para el botón "Calcular Costo Total" */
+        .calculate-button {
+            margin-top: 20px; /* Separación desde arriba */
+            padding: 10px 20px; /* Tamaño del botón */
+            font-size: 18px; /* Tamaño de fuente */
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Resto de tu CSS existente */
+    </style>
+    <script>
+        // Función para manejar el cambio en la casilla de Mercado Libre nivel 6
+        function verificarNivelMercadoLibre() {
+            var nivel6Checkbox = document.getElementById("tiene_nivel_6");
+            var starPlusOption = document.getElementById("Star+");
+            var disneyPlusOption = document.getElementById("Disney+");
+
+            if (nivel6Checkbox.checked) {
+                // Si la casilla está marcada, ocultar las opciones de "Star+" y "Disney+"
+                starPlusOption.style.display = "none";
+                disneyPlusOption.style.display = "none";
+            } else {
+                // Si la casilla no está marcada, mostrar las opciones de "Star+" y "Disney+"
+                starPlusOption.style.display = "block";
+                disneyPlusOption.style.display = "block";
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Calculadora de Suscripciones</h1>
+    
+    <form method="POST">
+        <label>¿Tiene Mercado Libre nivel 6?</label>
+        <input type="checkbox" name="tiene_nivel_6" id="tiene_nivel_6" value="1" onchange="verificarNivelMercadoLibre()">
+        <br>
+
+        <h2>Suscripciones</h2>
+        {% for servicio, planes in servicios.items() %}
+            <label>{{ servicio }}</label>
+            <select name="{{ servicio }}">
+                <option value="No tengo esta suscripción">No tengo esta suscripción</option>
+                {% for plan, costo in planes.items() %}
+                    <option value="{{ plan }}">{{ plan }} - ${{ costo }}</option>
+                {% endfor %}
+            </select>
+            <br>
+        {% endfor %}
+
+        <input type="submit" value="Calcular Costo Total" class="calculate-button">
+    </form>
+    
+    {% if costo_total %}
+        <h2>Costo Total:</h2>
+        <p>${{ costo_total }}</p>
+    {% endif %}
+</body>
+</html>
